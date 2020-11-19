@@ -130,7 +130,6 @@ number n8()
 }
 
 //write 9
-
 number n9()
 {
     number val;

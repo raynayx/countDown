@@ -1,5 +1,5 @@
 #include "4digit7seg.h"
-
+#define INTERVAL 86400000            // for a day 86400000 and 1000 for a second
 
 int pinA = 2;
 int pinB = 3;
@@ -14,34 +14,113 @@ int C2 = 10;
 int C3 = 11;
 int C4 = 12;
 
-int newTest = 1000;
+int countDownDays = 5;
 unsigned long lastUpdate = 0;
 struct digits{int first; int sec; int third; int fourth;};
 digits intToSingleDigit(int startDay)
 {
   String numArr = String(startDay);
   digits vals;
-  
-  for(struct {int i = 0; int j = 3;}s ; s.i < 4; s.i++,s.j--)
+  if(numArr.length() == 3)
   {
-    switch (s.i)
+    for(int i = 0; i < 4; i++)
+  {
+    switch (i)
     {
     case 0:
-      vals.first = String(numArr[s.i]).toInt();
+      vals.third = String(numArr[i]).toInt();
       break;
     case 1:
-      vals.sec = String(numArr[s.i]).toInt();
+      vals.sec = String(numArr[i]).toInt();
       break;
     case 2:
-      vals.third = String(numArr[s.i]).toInt();
+      vals.first = String(numArr[i]).toInt();
       break;
     case 3:
-      vals.fourth = String(numArr[s.i]).toInt();
+      vals.fourth = 0;
+//      String(numArr[i]).toInt();
       break;   
     default:
       break;
     }
   }
+  }
+  else if(numArr.length() == 2)
+  {
+     for(int i = 0; i < 4; i++)
+  {
+    switch (i)
+    {
+    case 0:
+      vals.sec = String(numArr[i]).toInt();
+      break;
+    case 1:
+      vals.first = String(numArr[i]).toInt();
+      break;
+    case 2:
+      vals.third = 0;
+//      String(numArr[i]).toInt();
+      break;
+    case 3:
+      vals.fourth = 0;
+//      String(numArr[i]).toInt();
+      break;   
+    default:
+      break;
+    }
+  }
+  }
+  else if(numArr.length() == 1)
+  {
+     for(int i = 0; i < 4; i++)
+  {
+    switch (i)
+    {
+    case 0:
+      vals.first = String(numArr[i]).toInt();
+      break;
+    case 1:
+      vals.sec = 0;
+      break;
+    case 2:
+      vals.third = 0;
+//      String(numArr[i]).toInt();
+      break;
+    case 3:
+      vals.fourth = 0;
+//      String(numArr[i]).toInt();
+      break;   
+    default:
+      break;
+    }
+  }
+  }
+  else
+  {
+    for(int i = 0; i < 4; i++)
+  {
+    switch (i)
+    {
+    case 0:
+      vals.fourth = String(numArr[i]).toInt();
+      break;
+    case 1:
+      vals.third = String(numArr[i]).toInt();
+      break;
+    case 2:
+      vals.sec = String(numArr[i]).toInt();
+      break;
+    case 3:
+      vals.first = String(numArr[i]).toInt();
+      break;   
+    default:
+      break;
+    }
+  }
+  }
+  
+  
+  
   return vals;
 }
 
@@ -64,28 +143,28 @@ void setup() {
 
 void loop() {
 
-   digits  a = intToSingleDigit(newTest);
+   digits  a = intToSingleDigit(countDownDays);
   for(int i = 0; i < 4; i++)
   {
     switch (i)
     {
     case 0:
-      dispNumber(a.first,c1,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
+      dispNumber(a.fourth,c1,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
       delay(1);
       Serial.println(a.first);
       break;
     case 1:
-      dispNumber(a.sec,c2,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
+      dispNumber(a.third,c2,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
       delay(1);
       Serial.println(a.sec);
       break;
     case 2:
-      dispNumber(a.third,c3,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
+      dispNumber(a.sec,c3,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
       delay(1);
       Serial.println(a.third);
       break;
     case 3:
-      dispNumber(a.fourth,c4,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
+      dispNumber(a.first,c4,pinA,pinB,pinC,pinD,pinE,pinF,pinG,C1,C2,C3,C4);
       delay(1);
       Serial.println(a.fourth);
       break;   
@@ -94,11 +173,22 @@ void loop() {
     }
   }
 
-  if((millis() - lastUpdate) > 1000)
+  if((millis() - lastUpdate) > INTERVAL)   
   {
     lastUpdate = millis();
-    newTest--;
+    if(countDownDays <= 0)
+    {
+      // call buzzing function here
+//      Serial.print(" millis \t");
+//      Serial.println(f0);
+      // get stuck here
+    }
+    else
+    {
+      countDownDays--;
+    }
+    
   }
  
-
+  
 }
