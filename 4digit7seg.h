@@ -51,4 +51,3 @@ static byte f9 = 0b00000100;
 
 
 void dispNumber(int val,digit c,int pinA, int pinB, int pinC, int pinD, int pinE, int pinF, int pinG, int C1,int C2, int C3, int C4);
-//void dispNumber(int val,digit c
